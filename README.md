@@ -1,5 +1,7 @@
 # capstone
-Capstone Project for 2019-2020
+2019-2020 Capstone Project
+
+## Directory Structure
 
 ### envs
 Contains the conda environment for the project
@@ -7,12 +9,24 @@ Contains the conda environment for the project
 ### scripts
 Contains useful scripts
 
+
+## Issue Practices
+### Creating Issues
+1. Decide what type of issue it is and tag it: story, task, etc.
+    1. Stories typically follow the INVEST pattern (Independent, Verifiable, Estimable, Small, and Testable) and describe a new feature being added for a particular purpose
+        1. All stories need an objective and acceptance critera (AC). Objective is the goal of the story. Acceptance criteria is what is required before a task can be considered completed.
+    1. Tasks are the smallest units of work
+    1. Bugs are issues with the existing codebase that require fixing
+1. Add it to the appropriate Sprint/Milestone
+1. Assign it to the appropriate person
+1. Add it to the project so that it is visible on the board and can be tracked.
+
 ## Commit Practices
 
-### Merge process
-1. ALWAYS REBASE - if unsure how, ask
+### Merge Process
+1. ALWAYS REBASE - if unsure how, ask (Note: This is also the only option enabled in GitHub for PRs right now)
 
-### Good commit messages
+### Good Commit Messages
 1. 3-4 character tag before commit title (either from existing list of tags, or be created)
     1. Can have multiple tags with space between (PREP NN)
 1. Descriptive title of what commit does
