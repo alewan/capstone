@@ -9,6 +9,9 @@ Contains the conda environment for the project
 ### scripts
 Contains useful scripts
 
+### aliases.sh
+Contains useful aliases for common commands
+
 
 ## Issue Practices
 ### Creating Issues
