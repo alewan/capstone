@@ -19,7 +19,9 @@ Contains useful aliases for common commands
     1. Stories typically follow the INVEST pattern (Independent, Verifiable, Estimable, Small, and Testable) and describe a new feature being added for a particular purpose
         1. All stories need an objective and acceptance critera (AC). Objective is the goal of the story. Acceptance criteria is what is required before a task can be considered completed.
     1. Tasks are the smallest units of work
+        1. Tasks should explain the desired outcome and (briefly) the reason for the task)
     1. Bugs are issues with the existing codebase that require fixing
+        1. Bugs need a 'Current Behaviour' and 'Expected Behaviour' so that it is clear what is being fixed.
 1. Add it to the appropriate Sprint/Milestone
 1. Assign it to the appropriate person
 1. Add it to the project so that it is visible on the board and can be tracked.
@@ -62,3 +64,4 @@ ENV-UP
 - BE - backend
 - IMG - images/video 
 - AUD - audio
+- MISC - miscellaneous
