@@ -1,4 +1,4 @@
-# Written by Aleksei Wan and Meghan Muldoon on 25.10.2019
+ # Written by Aleksei Wan and Meghan Muldoon on 25.10.2019
 
 from argparse import ArgumentParser
 import os
@@ -14,41 +14,58 @@ import wave
 # 4) VECTORIZE WAV FILE AND FIND MFCC
 
 
-def create_av_files_from_input(file_name: str):
-    if not os.path.isfile(file_name):
-        return "File doesn't exist"
+def create_av_files_from_input(dir_path: str):
+    if not os.path.isdir(dir_path):
+        print("Dir DNE")
+        return "Dir doesn't exist"
 
-    name = os.path.splitext(file_name)[0]
-    wav_file_name = name + '.wav'
+    #Files = a list of filenames in the current directory
+    files = os.listdir(dir_path)
 
-    # COMMAND TO GET A WAV FILE FROM MP4
-    command1 = "(ffmpeg -i " + file_name + " -vn " + wav_file_name + ")"
-    subprocess.call(command1, shell=True)
+    #Manually remove hidden files (.DS_Store) from the filelist
+    #Don't use glob to remove hidden files;
+    files_no_hidden = []
+    for filename in files:
+        if not filename.startswith('.'):
+            files_no_hidden.append(filename)
+    
+    for filename in files_no_hidden:    
+        file_path = dir_path + "/" +filename
+        
+        new_folder_path =  file_path + "_proc_data"
+        os.mkdir(new_folder_path)   
+        
+        
+        output_name = new_folder_path + "/" + filename
+        wav_file_name = output_name + '.wav'
 
-    # COMMAND TO SAMPLE THE FAMES
-    # Sample = 5/3 fps (Sample every 0.6 seconds)
-    command2 = "(ffmpeg -i " + file_name + " -vf fps=5/3 " + name + "_%04d.jpg -hide_banner) "
-    subprocess.call(command2, shell=True)
 
-    # Rate = the sampling rate of the wav file (samples/second)
-    # Sig = data read as a numpy array
-    (rate, sig) = wav.read(wav_file_name)
+        command1 = "(ffmpeg -i " + file_path + " -vn " + wav_file_name + ")"
+        subprocess.call(command1, shell=True)
 
-    # file is a wave_read object
-    file = wave.open(wav_file_name, 'r')
-    samples = file.getnframes()
+        # COMMAND TO SAMPLE THE FAMES
+        # Sample = 5/3 fps (Sample every 0.6 seconds)
+        command2 = "(ffmpeg -i " + file_path + " -vf fps=5/3 " + output_name + "_%04d.jpg -hide_banner) "
+        subprocess.call(command2, shell=True)
 
-    duration = samples / rate
+        # Rate = the sampling rate of the wav file (samples/second)
+        # Sig = data read as a numpy array
+        (rate, sig) = wav.read(wav_file_name)
 
-    mfcc_feat = mfcc(sig, rate)
-    fbank_feat = logfbank(sig, rate)
+        # file is a wave_read object
+        file = wave.open(wav_file_name, 'r')
+        samples = file.getnframes()
 
-    print(fbank_feat[1:3,:])
+        duration = samples / rate
 
+        mfcc_feat = mfcc(sig, rate)
+        fbank_feat = logfbank(sig, rate)
+
+        #print(fbank_feat[1:3,:])
 
 if __name__ == "__main__":
-    parser = ArgumentParser(description='Create jpg images and wav file from mp4 input')
-    parser.add_argument('--input_file', type=str, default='testvideo1.mp4', help='filepath to read from')
+    parser = ArgumentParser(description='Create jpg images and wav file from a directory of mp4 inputs')
+    parser.add_argument('--input_directory', type=str, default='testvideo1.mp4', help='filepath to dir')
     args = parser.parse_args()
 
-    create_av_files_from_input(args.input_file)
+    create_av_files_from_input(args.input_directory)
