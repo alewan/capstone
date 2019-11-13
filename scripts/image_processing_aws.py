@@ -8,6 +8,7 @@ from sys import exit
 import re
 from argparse import ArgumentParser
 import boto3
+import json
 
 # regex for image file matching
 IMG_FILE = re.compile('(.*)\.jp[e]?g$')
@@ -68,13 +69,13 @@ if __name__ == "__main__":
     get_full_responses = args.output_file if args.output_file is not None else False
 
     if not os.path.exists(path_to_check):
-        print('Provided path ' + path_to_check + ' is not a valid directory. Please try again')
+        print('Provided path', path_to_check, 'is not a valid directory. Please try again')
         exit(-1)
 
     photo_labels = detect_photos_in_dir(path_to_check, get_full_responses)
 
     if get_full_responses:
         with open(args.output_file, 'w+') as f:
-            f.write(str(photo_labels))
+            json.dump(photo_labels, f)
     else:
         print(photo_labels)
