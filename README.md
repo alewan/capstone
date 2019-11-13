@@ -12,6 +12,8 @@ Contains useful scripts
 ### aliases.sh
 Contains useful aliases for common commands
 
+### cached_results
+Contains results from external services that should be saved/made available to the team.
 
 ## Issue Practices
 ### Creating Issues
