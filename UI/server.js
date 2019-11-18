@@ -17,7 +17,6 @@ app.get('/', function(req, res){
       res.sendFile(__dirname + "/index.html");
 });
 
-// get file from user
 app.post('/api/photo', function(req, res){
     upload(req, res, function(err) {
         if(err) {
@@ -26,8 +25,6 @@ app.post('/api/photo', function(req, res){
         res.end("Emotion Classification: y x s");
     });
 });
-
-// app.use(express.static(path.join(__dirname,"public")));
 
 app.listen(3000, function(){
     console.log("Working on port 3000");
