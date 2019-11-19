@@ -67,3 +67,23 @@ ENV-UP
 - IMG - images/video 
 - AUD - audio
 - MISC - miscellaneous
+
+## Git Commands
+Tip: create backup branches to avoid messing up a working branch.
+
+### SQUASH
+$ git rebase -i 
+In the terminal window, pick, squash, etc. the commit messages that you want. Always squash down (squash towards the first commit you made chornologically).
+
+### REBASE 
+Rebase is what you do when you want to push your code (you want to put your code into the github repository).
+git rebase -i origin/develop
+If merge conflicts, the rebase will pause on that commit. You fix all the conflicts. 
+$ git add
+$ git rebase --continue
+Now, to push into the github repo:
+$ git push
+
+Tagging Reviewers:
+- Tag the people who your PR is relevant to.
+- Tag people only once you're ready to have your code reviewed. 
