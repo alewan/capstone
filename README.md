@@ -12,6 +12,8 @@ Contains useful scripts
 ### aliases.sh
 Contains useful aliases for common commands
 
+### cached_results
+Contains results from external services that should be saved/made available to the team.
 
 ## Issue Practices
 ### Creating Issues
@@ -19,7 +21,7 @@ Contains useful aliases for common commands
     1. Stories typically follow the INVEST pattern (Independent, Verifiable, Estimable, Small, and Testable) and describe a new feature being added for a particular purpose
         1. All stories need an objective and acceptance critera (AC). Objective is the goal of the story. Acceptance criteria is what is required before a task can be considered completed.
     1. Tasks are the smallest units of work
-        1. Tasks should explain the desired outcome and (briefly) the reason for the task)
+        1. Tasks should explain the desired outcome and (briefly) the reason for the task
     1. Bugs are issues with the existing codebase that require fixing
         1. Bugs need a 'Current Behaviour' and 'Expected Behaviour' so that it is clear what is being fixed.
 1. Add it to the appropriate Sprint/Milestone
@@ -39,7 +41,7 @@ Contains useful aliases for common commands
 1. Tag the related issue in the commit message</br>
 `Issue-Id: #xxx`
 1. Update the environment.yaml if you add new dependencies</br>
-`conda env export > <path_to_envs>/environment.yaml`
+    1. Can be done with `export_env` if the aliases script is sourced.
     1. If the environent is updated, add ENV-UP tag to end of commit
 1. Limit characters per line to 70 for readability
 
