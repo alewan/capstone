@@ -54,6 +54,8 @@ class AudioNN:
         file_path = os.path.dirname(os.path.realpath(__file__))
         self.model_name = name
         self.checkpoint_dir = os.path.join(file_path, 'checkpoints')
+        if not os.path.exists(self.checkpoint_dir):
+            os.mkdir(self.checkpoint_dir)
         self.model = AudioClassifier()
         self.optimizer = optim.SGD(self.model.parameters(), lr=0.01, momentum=0.9)
 
