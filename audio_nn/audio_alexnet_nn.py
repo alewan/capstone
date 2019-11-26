@@ -17,30 +17,33 @@ from torchvision import models, transforms
 # regex for image file matching
 IMG_FILE = re.compile('(.*)\.jp[e]?g$')
 
+
 # 2 layer linear fully connected neural network
-class FeatureClassifier(nn.Module):
+class AudioClassifierAlexNet(nn.Module):
 
     def __init__(self):
-        super(FeatureClassifier, self).__init__()
-        # inputs to the nn must be tensors of form [N, C, H, W]
-        self.fc1 = nn.Linear(256 * 6 * 11, 50)
+        super(AudioClassifierAlexNet, self).__init__()
+        # 256 * 11 * 6 is the output size of running the 3 x 396 x 224
+        # image through alexnet feature extraction
+        self.fc1 = nn.Linear(256 * 11 * 6, 50)
         self.fc2 = nn.Linear(50, 8)
 
+    # inputs to the nn must be tensors of form [N, C, H, W]
     def forward(self, x):
-        x = x.view(-1, 256 * 6 * 11)  # flatten feature data
+        x = x.view(-1, 256 * 11 * 6)  # flatten feature data
         x = F.relu(self.fc1(x))
         x = self.fc2(x)
         return x
 
 
-class ImageNN:
+class AudioNN:
 
     def __init__(self, name):
         file_path = os.path.dirname(os.path.realpath(__file__))
         self.model_name = name
         self.checkpoint_dir = os.path.join(file_path, 'checkpoints')
         self.alexnet = models.alexnet(pretrained=True)
-        self.classifier = FeatureClassifier()
+        self.classifier = AudioClassifierAlexNet()
         self.optimizer = optim.SGD(self.classifier.parameters(), lr=0.01, momentum=0.9)
 
     def load_data(self, directory, batch_size=80):
@@ -49,13 +52,15 @@ class ImageNN:
         data_transform = transforms.Compose([transforms.Resize(224),
                                              transforms.ToTensor()])
 
-        print('Using ' + directory + ' as images directory... ')
+        print('Using ' + directory + ' as audio directory... ')
 
         for filename in os.listdir(directory):  # assuming jpg
             img_file = re.match(IMG_FILE, filename)
             if img_file:
                 img_path = os.path.join(directory, filename)
                 im = Image.open(img_path)
+                # Transforms: i) convert image to tensor
+                #            ii) resize smaller edge to 224
                 im = data_transform(im)
                 image_list.append(im)
                 cats = filename.split("-")
@@ -164,18 +169,19 @@ class ImageNN:
 
 if __name__ == "__main__":
     parser = ArgumentParser(description='Train image neural net')
-    parser.add_argument('--images_dir', '-i', type=str, default='images', help='Dir containing images for classification')
+    parser.add_argument('--audio_dir', '-a', type=str, default='audio', help='Dir containing audio spectograms for classification')
     parser.add_argument('--model_name', '-m', type=str, help='Name of the model for checkpointing')
     parser.add_argument('--batch_size', '-b', type=int, help="Number of images per batch")
     parser.add_argument('--epochs', '-e', type=int, help="Number of training epochs")
     args = parser.parse_args()
 
-    model = ImageNN(args.model_name)
-    if not os.path.exists(args.images_dir):
-        print('Provided path', args.images_dir, 'is not a valid directory. Please try again')
+    model = AudioNN(args.model_name)
+    if not os.path.exists(args.audio_dir):
+        print('Provided path', args.audio_dir, 'is not a valid directory. Please try again')
         exit(-1)
-    dataloader = model.load_data(args.images_dir, args.batch_size)
-    features = model.get_features(dataloader)
-    model.train_with_features(features, batch_size=args.batch_size, num_epochs=args.epochs)
+    dataloader = model.load_data(args.audio_dir, args.batch_size)
+    audio_features = model.get_features(dataloader)
+
+    model.train_with_features(audio_features, batch_size=args.batch_size, num_epochs=args.epochs)
 
 
