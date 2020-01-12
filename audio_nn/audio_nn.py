@@ -14,35 +14,37 @@ import torch.optim as optim
 import torch.utils.data as utils
 from torchvision import models, transforms
 
+from datetime import datetime
+
 # regex for image file matching
-IMG_FILE = re.compile('(.*)\.jp[e]?g$')
+IMG_FILE = re.compile('(.*)\.png$')
 
 
 # 2 layer linear fully connected neural network
 class AudioClassifier(nn.Module):
 
-    # assume input image is of size 3 x 396 x 224
+    # assume input image is of size 4 x 200 x 140
     def __init__(self):
         super(AudioClassifier, self).__init__()
         self.name = "gesture"
 
         # Conv2d(in_channel, out_channel, kernel_size, stride=1, padding=0)
         # output_size = (in_size - k_size + 2*padding)/stride + 1
-        self.conv1 = nn.Conv2d(3, 6, 5)
+        self.conv1 = nn.Conv2d(4, 6, 5)
         self.conv2 = nn.Conv2d(6, 10, 5)
 
         # This is a generic max pooling layer MaxPool2d(kernel_size, stride)
         # output_size = (in_size - kernel_size)/stride + 1
         self.pool = nn.MaxPool2d(2, 2)
 
-        self.fc1 = nn.Linear(10 * 96 * 53, 50)
+        self.fc1 = nn.Linear(10 * 47 * 32, 50)
         self.fc2 = nn.Linear(50, 8)
 
     # inputs to the nn must be tensors of form [N, C, H, W]
     def forward(self, x):
-        x = self.pool(F.relu(self.conv1(x)))  # output: 6x196x110
-        x = self.pool(F.relu(self.conv2(x)))  # output: 10x96x53
-        x = x.view(-1, 10 * 96 * 53)
+        x = self.pool(F.relu(self.conv1(x)))  # output: 6x98x68
+        x = self.pool(F.relu(self.conv2(x)))  # output: 10x47x32
+        x = x.view(-1, 10 * 47 * 32)
         x = F.relu(self.fc1(x))
         x = self.fc2(x)
         return x
@@ -62,7 +64,9 @@ class AudioNN:
     def load_data(self, directory, batch_size=80):
         image_list = []
         labels = []
-        data_transform = transforms.Compose([transforms.Resize(224),
+        # padding is the colour of silence in the clips
+        data_transform = transforms.Compose([transforms.Pad((60, 0), fill=(0,127,127)),
+                                             transforms.CenterCrop((200, 140)),
                                              transforms.ToTensor()])
 
         print('Using ' + directory + ' as audio directory... ')
@@ -72,8 +76,9 @@ class AudioNN:
             if img_file:
                 img_path = os.path.join(directory, filename)
                 im = Image.open(img_path)
-                # Transforms: i) convert image to tensor
-                #            ii) resize smaller edge to 224
+                # Transforms: i) Add padding to horizontal dimension of image
+                #            ii) crop to be 140x200
+                #           iii) convert image to tensor
                 im = data_transform(im)
                 image_list.append(im)
                 cats = filename.split("-")
@@ -94,9 +99,12 @@ class AudioNN:
         criterion = nn.CrossEntropyLoss()
         iters, losses, train_acc, val_acc = [], [], [], []
 
+        checkpoint_datetime = datetime.now().strftime("%Y%m%d-%H%M%S")
+
         # training
         n = 0  # the number of iterations
         for epoch in range(num_epochs):
+            print("Training epoch ", epoch)
             for imgs, labels in train:
 
                 self.model.train()
@@ -115,7 +123,7 @@ class AudioNN:
                 n += 1
 
             # save the current model parameters
-            model_info = "model_{0}_bs{1}_epoch{2}".format(self.model_name, batch_size, epoch)
+            model_info = checkpoint_datetime + "_model_{0}_bs{1}_epoch{2}".format(self.model_name, batch_size, epoch)
             checkpoint_path = os.path.join(self.checkpoint_dir, model_info)
             self.checkpoint_model(epoch, loss, checkpoint_path)
 
