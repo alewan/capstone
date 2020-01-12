@@ -1,3 +1,7 @@
 .idea
-.DS_Store
 UI/Uploads
+audio_nn/checkpoints/
+
+# prevent the macOS file from being commited
+.DS_Store
+**/.DS_Store
