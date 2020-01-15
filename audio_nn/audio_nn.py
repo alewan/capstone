@@ -15,6 +15,7 @@ import torch.utils.data as utils
 from torchvision import models, transforms
 
 from datetime import datetime
+import numpy as np
 
 # regex for image file matching
 IMG_FILE = re.compile('(.*)\.png$')
@@ -46,7 +47,7 @@ class AudioClassifier(nn.Module):
         x = self.pool(F.relu(self.conv2(x)))  # output: 10x47x32
         x = x.view(-1, 10 * 47 * 32)
         x = F.relu(self.fc1(x))
-        x = self.fc2(x)
+        x = F.softmax(self.fc2(x), dim=1)
         return x
 
 
@@ -94,7 +95,7 @@ class AudioNN:
 
         return my_dataloader
 
-    def train_network(self, train, valid=None, batch_size=500, num_epochs=100):
+    def train_network(self, train, batch_size, num_epochs, valid=None):
 
         criterion = nn.CrossEntropyLoss()
         iters, losses, train_acc, val_acc = [], [], [], []
@@ -104,7 +105,7 @@ class AudioNN:
         # training
         n = 0  # the number of iterations
         for epoch in range(num_epochs):
-            print("Training epoch ", epoch)
+            print("Training epoch", epoch)
             for imgs, labels in train:
 
                 self.model.train()
@@ -126,6 +127,12 @@ class AudioNN:
             model_info = checkpoint_datetime + "_model_{0}_bs{1}_epoch{2}".format(self.model_name, batch_size, epoch)
             checkpoint_path = os.path.join(self.checkpoint_dir, model_info)
             self.checkpoint_model(epoch, loss, checkpoint_path)
+
+            np.savetxt(self.checkpoint_dir + '/' + checkpoint_datetime +"_acc.csv", train_acc, delimiter=",", fmt='%s')
+            np.savetxt(self.checkpoint_dir + '/' + checkpoint_datetime +"_loss.csv", losses, delimiter=",", fmt='%s')
+
+            if valid is not None:
+                np.savetxt(self.checkpoint_dir + '/' + checkpoint_datetime + "_val_acc.csv", val_acc, delimiter=",", fmt='%s')
 
         # plotting
         plt.title("Training Curve")
@@ -167,24 +174,36 @@ class AudioNN:
         }, path)
 
     def load_from_checkpoint(self, path):
+        self.model = AudioClassifier()
+        self.optimizer = optim.SGD(self.model.parameters(), lr=0.01, momentum=0.9)
+
         # load the model state from a final
         checkpoint = torch.load(path)
         self.model.load_state_dict(checkpoint['model_state_dict'])
         self.optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
         epoch = checkpoint['epoch']
         loss = checkpoint['loss']
-        self.model.load_state_dict(torch.load(path))
         self.model.eval()
 
         return epoch, loss
 
+    def get_prediction(self, data):
+        self.model.eval()
+        predictions = []
+        for imgs, labels in data:
+            output = self.model(imgs)
+            predictions.append(output.data)
+        return predictions
 
 if __name__ == "__main__":
-    parser = ArgumentParser(description='Train image neural net')
-    parser.add_argument('--audio_dir', '-a', type=str, default='audio', help='Dir containing audio spectograms for classification')
-    parser.add_argument('--model_name', '-m', type=str, help='Name of the model for checkpointing')
-    parser.add_argument('--batch_size', '-b', type=int, help="Number of images per batch")
-    parser.add_argument('--epochs', '-e', type=int, help="Number of training epochs")
+    parser = ArgumentParser(description='Audio neural net')
+    parser.add_argument('--train', '-t', type=bool, default=False, help='True trains the network, False evaluates the data')
+    parser.add_argument('--audio_dir', '-a', type=str, help='Dir containing audio spectograms for classification', required=True)
+    parser.add_argument('--model_name', '-m', type=str, help='Name of the model for checkpointing', required=True)
+    parser.add_argument('--batch_size', '-b', type=int, default=500, help="Number of images per batch")
+    parser.add_argument('--epochs', '-e', type=int, default=100, help="Number of training epochs")
+    parser.add_argument('--checkpoint', '-c', type=str, help="File path for checkpoint to load model from")
+    parser.add_argument('--save_to_csv', '-s', type=bool, default=False, help="Save accuracy and loss to csv file during training")
     args = parser.parse_args()
 
     model = AudioNN(args.model_name)
@@ -193,6 +212,16 @@ if __name__ == "__main__":
         exit(-1)
     dataloader = model.load_data(args.audio_dir, args.batch_size)
 
-    model.train_network(dataloader, batch_size=args.batch_size, num_epochs=args.epochs)
-
+    if args.train:
+        model.train_network(dataloader, batch_size=args.batch_size, num_epochs=args.epochs)
+    else:
+        if args.checkpoint is None:
+            print('Must provide a checkpoint file to run an evaluation. Please try again')
+            exit(-1)
+        elif not os.path.isfile(args.checkpoint):
+            print('Provided path', args.checkpoint, 'is not a valid file. Please try again')
+            exit(-1)
+        model.load_from_checkpoint(args.checkpoint)
+        pred = model.get_prediction(dataloader)
+        print(pred)
 
