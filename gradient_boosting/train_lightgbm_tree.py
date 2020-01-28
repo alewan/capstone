@@ -11,14 +11,11 @@ import lightgbm as lgbm
 import numpy as np
 from random import shuffle
 
+
 def train_lgbm_model(params, training_data, validation_data=None, save_model_path: str = 'lgbm-model.txt'):
     bst = lgbm.train(params, training_data, valid_sets=[validation_data])
     bst.save_model(save_model_path)
     return bst
-
-
-def load_lgbm_model(filename: str = 'lgbm-model.txt'):
-    return lgbm.Booster(model_file=filename)  # init model
 
 
 def calculate_acc(predictions, labels):
