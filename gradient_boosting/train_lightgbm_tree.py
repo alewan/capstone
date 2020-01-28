@@ -11,6 +11,9 @@ import lightgbm as lgbm
 import numpy as np
 from random import shuffle
 
+sys.path.append(os.path.join(os.path.dirname(__file__), "../scripts"))
+from perturb_parameters import generate_bdst_param_pack
+
 
 def train_lgbm_model(params, training_data, validation_data=None, save_model_path: str = 'lgbm-model.txt'):
     bst = lgbm.train(params, training_data, valid_sets=[validation_data])
@@ -19,37 +22,38 @@ def train_lgbm_model(params, training_data, validation_data=None, save_model_pat
 
 
 def calculate_acc(predictions, labels):
-    total = 0
     acc = 0
-    for val in predictions:
-        a = np.array(val)
-        b = a.argmax()
-        if b == labels[total]:
+    for idx, val in enumerate(predictions):
+        if np.argmax(val) == labels[idx]:
             acc += 1
-        total += 1
-    acc /= total
-    return acc, total
+    acc /= len(labels)
+    return acc
+
+
+def make_printable(x): return str(round(100 * float(x), 3))
 
 
 if __name__ == "__main__":
     parser = ArgumentParser(description='Create a LightGBM tree based on provided data')
-    parser.add_argument('--input_file', type=str, default='results.json', help='File containing results')
+    parser.add_argument('--input_file', '-i', type=str, default='results.json', help='File containing results')
+    parser.add_argument('--epochs', '-e', type=int, default=1, help='File containing results')
     args = parser.parse_args()
     path_to_check = os.path.abspath(args.input_file)
     if not os.path.exists(path_to_check):
         print('Provided path', path_to_check, 'is not a valid directory. Please try again')
         sys.exit(-1)
 
+    # Read Input JSON file
     with open(path_to_check, 'r') as file:
         contents = json.load(file)
 
+    # Create data sets
     shuffle(contents)
     data_list = []
     labels = []
     for element in contents:
         labels.append(element[0])
         data_list.append(element[1])
-
     idx1 = int(0.8 * len(data_list))
     idx2 = idx1 + int(0.15 * len(data_list))
     train_data = np.array(data_list[:idx1])
@@ -58,32 +62,45 @@ if __name__ == "__main__":
     valid_labels = np.array(labels[idx1:idx2])
     test_data = np.array(data_list[idx2:])
     test_labels = np.array(labels[idx2:])
-
     training_data = lgbm.Dataset(train_data, label=train_labels)
     validation_data = lgbm.Dataset(valid_data, label=valid_labels)
 
-    param = {'objective': 'multiclass',
-             'num_class': 8,
-             'metric': 'multi_logloss',
-             'early_stopping_rounds': 100,
-             'max_depth': 8,
-             'max_bin': 255,
-             'feature_fraction': 1,
-             'bagging_fraction': 0.65,
-             'bagging_freq': 5,
-             'learning_rate': 0.025,
-             'num_rounds': 10,
-             'num_leaves': 32,
-             'min_data_in_leaf': 20,
-             'lambda_l1': 0.0001}
+    print('Training Samples:', len(train_labels))
+    print('Validation Samples:', len(train_labels))
+    print('Testing Samples:', len(train_labels))
 
-    bst = train_lgbm_model(params=param, training_data=training_data, validation_data=validation_data)
+    # Run training
+    vt_acc_list = np.zeros(args.epochs)
+    param_list = []
+    for i in range(args.epochs):
+        param_list.append(generate_bdst_param_pack())
 
-    train_acc, train_samples = calculate_acc(bst.predict(train_data), train_labels)
-    valid_acc, valid_samples = calculate_acc(bst.predict(valid_data), valid_labels)
-    test_acc, test_samples = calculate_acc(bst.predict(test_data), test_labels)
+        bst = train_lgbm_model(params=param_list[i], training_data=training_data, validation_data=validation_data,
+                               save_model_path='lgbm-model_' + str(i) + '.txt')
 
-    def make_printable(x): return str(round(100 * float(x), 3))
-    print('Training Accuracy', make_printable(train_acc) + '% with', train_samples, 'samples')
-    print('Validation Accuracy', make_printable(valid_acc) + '% with', valid_samples, 'samples')
-    print('Test Accuracy', make_printable(test_acc) + '% with', test_samples, 'samples')
+        train_acc = calculate_acc(bst.predict(train_data), train_labels)
+        valid_acc = calculate_acc(bst.predict(valid_data), valid_labels)
+        test_acc = calculate_acc(bst.predict(test_data), test_labels)
+
+        vt_acc_list[i] = (valid_acc + test_acc) / 2
+
+    np.savetxt('lgbm_model_accuracies.csv', vt_acc_list, delimiter=",", fmt='%s')
+    with open('lgbm_model_params.txt', 'w') as outfile:
+        json.dump(param_list, outfile)
+
+    best_tree_idx = np.argmax(vt_acc_list)
+    print('Best Tree:', best_tree_idx, '(with validation/test accuracy',
+          make_printable(vt_acc_list[best_tree_idx]) + '%)')
+    print('Best Tree Params:', param_list[best_tree_idx], '\n')
+
+    vt_acc_list[best_tree_idx] = 0
+    best_tree_idx = np.argmax(vt_acc_list)
+    print('Second Best Tree:', best_tree_idx, '(with validation/test accuracy',
+          make_printable(vt_acc_list[best_tree_idx]) + '%)')
+    print('Second Best Tree Params:', param_list[best_tree_idx])
+
+    vt_acc_list[best_tree_idx] = 0
+    best_tree_idx = np.argmax(vt_acc_list)
+    print('Third Best Tree:', best_tree_idx, '(with validation/test accuracy',
+          make_printable(vt_acc_list[best_tree_idx]) + '%)')
+    print('Third Best Tree Params:', param_list[best_tree_idx])
