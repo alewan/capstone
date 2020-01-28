@@ -1,19 +1,14 @@
 from argparse import ArgumentParser
 import os
-import subprocess
-from python_speech_features import mfcc, logfbank, delta
 import librosa 
 import librosa.display
 import scipy.io.wavfile as wav
 from scipy import signal
 import matplotlib.pyplot as plt
-from matplotlib import cm
 import numpy as np
 import wave
 
 def spectral_analysis(path: str, out_path: str):
-
-
 	if not os.path.isdir(path):
 		print("Dir DNE")
 		return "Dir doesn't exist"
@@ -28,7 +23,7 @@ def spectral_analysis(path: str, out_path: str):
 	for filename in files:
 		if not filename.startswith('.'):
 			files_no_hidden.append(filename)
-	i = 0
+
 	for filename in files_no_hidden:
 
 		#Specify file paths, mostly unneeded 
@@ -126,7 +121,7 @@ def spectral_analysis(path: str, out_path: str):
 		mfcc_data= np.swapaxes(MFCC_DB, 0 ,1)
 		cax = ax.imshow(MFCC_DB, interpolation='nearest', origin='lower')
 		ax.set_title('MFCC')
-		np
+
 		plt.savefig(image_path + ".png")
 		plt.close()
 

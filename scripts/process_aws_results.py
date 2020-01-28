@@ -14,18 +14,13 @@ from scripts.process_naming import get_emotion_from_ravdess_name_aws
 
 # Takes in raw AWS emotions data struct, returns list sorted by confidence (highest to lowest)
 def read_aws_emotions(raw_emotions: list) -> list:
-    ret_list = []
-    for e in raw_emotions:
-        ret_list.append((e['Type'], e['Confidence']))
+    ret_list = [(em['Type'], em['Confidence']) for em in raw_emotions]
     ret_list.sort(key=lambda t: t[1], reverse=True)
     return ret_list
 
 
 def first_element_list_from_tuple_list(in_list: list) -> list:
-    out_list = []
-    for t in in_list:
-        out_list.append(t[0])
-    return out_list
+    return [t[0] for t in in_list]
 
 
 if __name__ == "__main__":
