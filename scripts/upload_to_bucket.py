@@ -16,6 +16,7 @@ from botocore.exceptions import ClientError
 # regex for image file matching
 IMG_FILE = re.compile('(.*)\.jp[e]?g$')
 
+
 def upload_file(file_name, bucket, object_name=None):
     """Upload a file to an S3 bucket
 
@@ -38,6 +39,7 @@ def upload_file(file_name, bucket, object_name=None):
         return False
     return True
 
+
 # Note: This depends on your AWS credentials and configs being set up
 
 def detect_photos_in_dir(directory: str, full_responses: bool, bucket) -> list:
@@ -57,7 +59,6 @@ def detect_photos_in_dir(directory: str, full_responses: bool, bucket) -> list:
         if img_file:
             path = directory + "/" + photo_name
             upload_file(path, bucket)
-        
 
 
 if __name__ == "__main__":
@@ -85,6 +86,3 @@ if __name__ == "__main__":
         exit(-1)
 
     photo_labels = detect_photos_in_dir(path_to_check, get_full_responses, )
-
-    
-

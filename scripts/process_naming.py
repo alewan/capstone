@@ -24,8 +24,10 @@ def is_ravdess_file(file_name: str) -> bool:
 def is_ravdess_name(name: str) -> bool:
     return re.match(RAVDESS_NAME, name) is not None
 
+
 def is_crema_name(name: str) -> bool:
     pass
+
 
 def get_emotion_from_ravdess_name(name: str) -> str:
     a = re.match(RAVDESS_NAME, name)
@@ -69,5 +71,3 @@ def get_actor_from_ravdess_name(name: str) -> int:
 
 def get_actor_from_crema_name(name: str) -> int:
     pass
-
-
