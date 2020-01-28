@@ -14,6 +14,8 @@ import torch.optim as optim
 import torch.utils.data as utils
 from torchvision import models, transforms
 
+from scripts.process_naming import get_emotion_num_from_ravdess_name
+
 from datetime import datetime
 import numpy as np
 
@@ -82,8 +84,8 @@ class AudioNN:
                 #           iii) convert image to tensor
                 im = data_transform(im)
                 image_list.append(im)
-                cats = filename.split("-")
-                labels.append(torch.tensor(int(cats[2]) - 1))
+                emotion = get_emotion_num_from_ravdess_name(filename)
+                labels.append(torch.tensor(emotion))
             else:
                 print('Ignoring non-image file ' + filename)
 

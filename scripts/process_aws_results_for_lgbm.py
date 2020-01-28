@@ -8,7 +8,7 @@ import sys
 from argparse import ArgumentParser
 import json
 
-from process_ravdess_naming import get_emotion_num_from_ravdess_name, aws_number_from_emotion
+from process_naming import get_emotion_num_from_ravdess_name, aws_number_from_emotion
 from process_aws_results import first_element_list_from_tuple_list
 
 
