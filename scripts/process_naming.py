@@ -13,6 +13,9 @@ AWS_RAVDESS_LIST = ['NEUTRAL', 'CALM', 'HAPPY', 'SAD', 'ANGRY', 'FEAR', 'DISGUST
 AWS_EMOTION_DICT = {'NEUTRAL': 0, 'CALM': 1, 'HAPPY': 2, 'SAD': 3, 'ANGRY': 4, 'FEAR': 5, 'DISGUSTED': 6,
                     'SURPRISED': 7, 'CONFUSED': 8}
 
+RAVDESS_NUM_ACTORS = 24
+CREMA_NUM_ACTORS = 0
+
 
 def is_ravdess_file(file_name: str) -> bool:
     return re.match(RAVDESS_FILE, file_name) is not None
@@ -21,6 +24,8 @@ def is_ravdess_file(file_name: str) -> bool:
 def is_ravdess_name(name: str) -> bool:
     return re.match(RAVDESS_NAME, name) is not None
 
+def is_crema_name(name: str) -> bool:
+    pass
 
 def get_emotion_from_ravdess_name(name: str) -> str:
     a = re.match(RAVDESS_NAME, name)
@@ -52,3 +57,17 @@ def aws_number_from_emotion(emotion: str) -> int:
         return AWS_EMOTION_DICT[emotion]
     except KeyError:
         return -1
+
+
+def get_actor_from_ravdess_name(name: str) -> int:
+    a = re.match(RAVDESS_NAME, name)
+    if a is not None:
+        idx = int(a.group(7)) - 1
+        return idx if idx < RAVDESS_NUM_ACTORS else -1
+    return 'ERROR - No match found'
+
+
+def get_actor_from_crema_name(name: str) -> int:
+    pass
+
+

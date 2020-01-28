@@ -9,7 +9,7 @@ from argparse import ArgumentParser
 import json
 
 sys.path.append('..')
-from scripts.process_ravdess_naming import get_emotion_from_ravdess_name_aws
+from scripts.process_naming import get_emotion_from_ravdess_name_aws
 
 
 # Takes in raw AWS emotions data struct, returns list sorted by confidence (highest to lowest)
