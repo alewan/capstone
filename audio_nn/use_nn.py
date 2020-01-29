@@ -6,6 +6,7 @@ from os import path
 from sys import exit
 import audio_nn as nn
 from argparse import ArgumentParser
+from numpy import savetxt
 
 if __name__ == "__main__":
     parser = ArgumentParser(description='Get predictions from audio neural net')
@@ -30,7 +31,7 @@ if __name__ == "__main__":
     model.load_from_checkpoint(args.checkpoint)
 
     dataloader = model.load_data(args.audio_dir, args.batch_size)
-    pred = model.get_prediction(dataloader)
+    pred = model.get_prediction(dataloader)[0]
 
-    # do something with pred, for now just print
-    print(pred)
+    # do something with pred, for now just save to CSV
+    savetxt('audio_nn_predictions.csv', pred.numpy(), delimiter=",", fmt='%s')
