@@ -22,7 +22,7 @@ from datetime import datetime
 import numpy as np
 
 # regex for image file matching
-IMG_FILE = re.compile('(.*)\.png$')
+IMG_FILE = re.compile('(.*)rgb_plt\.png$')
 
 
 # 2 layer linear fully connected neural network
@@ -55,8 +55,70 @@ class AudioClassifier(nn.Module):
         return x
 
 
-class AudioNN:
+def generate_data_label(filename: str) -> torch.tensor:
+    # TODO: will need to generalize once more datasets are in use
+    emotion = get_emotion_num_from_ravdess_name(filename)
+    return torch.tensor(emotion)
 
+
+def load_data(directory, batch_size):
+    image_list = []
+    labels = []
+    # padding is the colour of silence in the clips
+    data_transform = transforms.Compose([transforms.Pad((60, 0), fill=(0, 127, 127)),
+                                         transforms.CenterCrop((200, 140)),
+                                         transforms.ToTensor()])
+
+    print('Using', directory, 'as audio directory... ')
+
+    for filename in os.listdir(directory):  # assuming jpg
+        if re.match(IMG_FILE, filename) is not None:
+            # Transforms: i) Add padding to horizontal dimension of image
+            #            ii) crop to be 140x200
+            #           iii) convert image to tensor
+            image_list.append(data_transform(Image.open(os.path.join(directory, filename))))
+            labels.append(generate_data_label(filename))
+        else:
+            print('Ignoring non-image file', filename)
+
+    tensor_img = torch.stack(image_list)
+    tensor_labels = torch.stack(labels)
+
+    my_dataset = utils.TensorDataset(tensor_img, tensor_labels)  # create dataset
+    my_dataloader = utils.DataLoader(my_dataset, batch_size=batch_size)
+
+    return my_dataloader
+
+
+def load_data_with_filename(directory, batch_size, network):
+    image_list = []
+    image_name = []
+    # padding is the colour of silence in the clips
+    data_transform = transforms.Compose([transforms.Pad((60, 0), fill=(0, 127, 127)),
+                                         transforms.CenterCrop((200, 140)),
+                                         transforms.ToTensor()])
+
+    print('Using', directory, 'as audio directory... ')
+
+    for filename in os.listdir(directory):  # assuming jpg
+        match_obj = re.match(IMG_FILE, filename)
+        if match_obj is not None:
+            image_list.append(data_transform(Image.open(os.path.join(directory, filename))))
+            image_name.append(match_obj[1])
+        else:
+            print('Ignoring non-image file', filename)
+
+    tensor_img = torch.stack(image_list)
+    tensor_names = torch.from_numpy(np.linspace(0, len(image_name), len(image_name)))
+    network.name_list = image_name
+
+    my_dataset = utils.TensorDataset(tensor_img, tensor_names)  # create dataset
+    my_dataloader = utils.DataLoader(my_dataset, batch_size=batch_size)
+
+    return my_dataloader
+
+
+class AudioNN:
     def __init__(self, name="model"):
         file_path = os.path.dirname(os.path.realpath(__file__))
         self.model_name = name
@@ -65,41 +127,7 @@ class AudioNN:
             os.mkdir(self.checkpoint_dir)
         self.model = AudioClassifier()
         self.optimizer = optim.SGD(self.model.parameters(), lr=0.01, momentum=0.9)
-
-    def load_data(self, directory, batch_size):
-        image_list = []
-        labels = []
-        # padding is the colour of silence in the clips
-        data_transform = transforms.Compose([transforms.Pad((60, 0), fill=(0, 127, 127)),
-                                             transforms.CenterCrop((200, 140)),
-                                             transforms.ToTensor()])
-
-        print('Using', directory, 'as audio directory... ')
-
-        for filename in os.listdir(directory):  # assuming jpg
-            img_file = re.match(IMG_FILE, filename)
-            if img_file:
-                img_path = os.path.join(directory, filename)
-                im = Image.open(img_path)
-                # Transforms: i) Add padding to horizontal dimension of image
-                #            ii) crop to be 140x200
-                #           iii) convert image to tensor
-                im = data_transform(im)
-                image_list.append(im)
-
-                # TODO: will need to generalize once more datasets are in use
-                emotion = get_emotion_num_from_ravdess_name(filename)
-                labels.append(torch.tensor(emotion))
-            else:
-                print('Ignoring non-image file ', filename)
-
-        tensor_img = torch.stack(image_list)
-        tensor_labels = torch.stack(labels)
-
-        my_dataset = utils.TensorDataset(tensor_img, tensor_labels)  # create your datset
-        my_dataloader = utils.DataLoader(my_dataset, batch_size=batch_size)
-
-        return my_dataloader
+        self.name_list = []
 
     def train_network(self, train, batch_size, num_epochs, valid):
         criterion = nn.CrossEntropyLoss()
@@ -112,7 +140,6 @@ class AudioNN:
         for epoch in range(num_epochs):
             print("Training epoch", epoch)
             for imgs, labels in train:
-
                 self.model.train()
                 out = self.model(imgs)  # forward pass
                 loss = criterion(out, labels)  # compute the total loss
@@ -180,7 +207,7 @@ class AudioNN:
     def get_prediction(self, data):
         self.model.eval()
         predictions = []
-        for imgs, labels in data:
+        for imgs, name_ids in data:
             output = self.model(imgs)
-            predictions.append(output.data)
+            predictions.append((output.data, [self.name_list[i] for i in range(len(imgs))]))
         return predictions
