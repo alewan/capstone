@@ -23,7 +23,7 @@ if __name__ == "__main__":
 
     model = nn.AudioNN(args.model_name)
 
-    dataloader = model.load_data(args.audio_dir, args.batch_size)
+    dataloader = nn.load_data(args.audio_dir, args.batch_size)
 
     # set up the validation data loader if its being used
     val_loader = None
@@ -31,6 +31,6 @@ if __name__ == "__main__":
         if not path.exists(args.val_dir):
             print('Provided validation path', args.val_dir, 'is not a valid directory. Please try again')
             exit(-1)
-        val_loader = model.load_data(args.val_dir, args.batch_size)
+        val_loader = nn.load_data(args.val_dir, args.batch_size)
 
     model.train_network(dataloader, batch_size=args.batch_size, num_epochs=args.epochs, valid=val_loader)
