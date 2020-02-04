@@ -30,13 +30,13 @@ def calculate_acc(predictions, labels):
     return acc
 
 
-def make_printable(x): return str(round(100 * float(x), 3))
+def make_printable(x) -> str: return str(round(100 * float(x), 3))
 
 
 if __name__ == "__main__":
     parser = ArgumentParser(description='Create a LightGBM tree based on provided data')
     parser.add_argument('--input_file', '-i', type=str, default='results.json', help='File containing results')
-    parser.add_argument('--epochs', '-e', type=int, default=1, help='File containing results')
+    parser.add_argument('--epochs', '-e', type=int, default=3, help='File containing results')
     args = parser.parse_args()
     path_to_check = os.path.abspath(args.input_file)
     if not os.path.exists(path_to_check):
