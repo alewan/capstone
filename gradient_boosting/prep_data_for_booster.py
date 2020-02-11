@@ -98,6 +98,6 @@ if __name__ == "__main__":
         aws_contents)
 
     full_list = merge_lists(aud_dict, aws_list, args.training)
-
+    print('Merged list size:', len(full_list))
     with open(args.out_file, 'w+') as f:
         json.dump(full_list, f)
