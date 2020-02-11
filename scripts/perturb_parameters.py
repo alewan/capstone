@@ -6,9 +6,20 @@ from numpy import absolute, round, random as rand
 def pull_random_float(mean: float = 0.0, stddev: float = 1) -> float:
     return absolute(rand.normal(mean, stddev, 1)[0])
 
+def pull_random_float_with_ceiling(ceiling: float, mean: float = 0.0, stddev: float = 1) -> float:
+    x = pull_random_float(mean, stddev)
+    return x if x < ceiling else ceiling
+
+def pull_random_float_with_floor(floor: float, mean: float = 0.0, stddev: float = 1) -> float:
+    x = pull_random_float(mean, stddev)
+    return x if x > floor else floor
 
 def pull_random_int(mean: int = 0, stddev: float = 1.0) -> int:
     return int(round(pull_random_float(mean, stddev)))
+
+def pull_random_int_with_floor(floor: int, mean: int = 0, stddev: float = 1.0) -> int:
+   x = pull_random_int(mean, stddev) 
+   return x if x > floor else floor
 
 
 def generate_bdst_param_pack() -> dict:
@@ -29,14 +40,16 @@ def generate_bdst_param_pack() -> dict:
              'lambda_l1': 0.0001}
     """
 
-    depth = pull_random_int(8, 1.0)
-    bagging_frac = pull_random_float(0.65, 0.15)
-    bagging_freq = pull_random_int(5, 2.0)
-    lr = pull_random_float(0.01, 0.025)
-    l1 = pull_random_float(0.001, 0.005)
-    leaves = pull_random_int(32, 2.0)
-    rounds = pull_random_int(1000, 150.0)
-    es_rounds = round(rounds / 10)
+    depth = pull_random_int_with_floor(0, 14, 10.0)
+    bagging_frac = pull_random_float_with_ceiling(1, 0.75, 0.25)
+    bagging_freq = pull_random_int_with_floor(0, 7, 3.0)
+    lr = pull_random_float_with_floor(0.0001, 0.015, 0.015)
+    l1 = pull_random_float_with_floor(0.00001, 0.005, 0.001)
+    leaves = pull_random_int(32, 8.0)
+    rounds = pull_random_int(3250, 750.0)
+    es_rounds = round(rounds / 20)
+    #feature_frac = pull_random_float_with_ceiling(0.8, 0.2, 1)
+    min_data_leaf = pull_random_int(20, 5)
 
     return {'objective': 'multiclass',
             'num_class': 8,
@@ -50,5 +63,5 @@ def generate_bdst_param_pack() -> dict:
             'learning_rate': lr,
             'num_rounds': rounds,
             'num_leaves': leaves,
-            'min_data_in_leaf': 20,
+            'min_data_in_leaf': min_data_leaf,
             'lambda_l1': l1}

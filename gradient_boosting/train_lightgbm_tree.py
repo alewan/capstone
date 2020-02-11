@@ -55,7 +55,7 @@ if __name__ == "__main__":
         labels.append(element[0])
         data_list.append(element[1])
     idx1 = int(0.8 * len(data_list))
-    idx2 = idx1 + int(0.15 * len(data_list))
+    idx2 = idx1 + int(0.1 * len(data_list))
     train_data = np.array(data_list[:idx1])
     train_labels = np.array(labels[:idx1])
     valid_data = np.array(data_list[idx1:idx2])
@@ -70,7 +70,7 @@ if __name__ == "__main__":
     print('Testing Samples:', len(train_labels))
 
     # Run training
-    vt_acc_list = np.zeros(args.epochs)
+    acc_list = np.zeros((args.epochs, 3))
     param_list = []
     for i in range(args.epochs):
         param_list.append(generate_bdst_param_pack())
@@ -82,12 +82,16 @@ if __name__ == "__main__":
         valid_acc = calculate_acc(bst.predict(valid_data), valid_labels)
         test_acc = calculate_acc(bst.predict(test_data), test_labels)
 
-        vt_acc_list[i] = (valid_acc + test_acc) / 2
+        acc_list[i][0] = calculate_acc(bst.predict(train_data), train_labels) 
+        acc_list[i][1] = calculate_acc(bst.predict(valid_data), valid_labels)
+        acc_list[i][2] = calculate_acc(bst.predict(test_data), test_labels)
 
-    np.savetxt('lgbm_model_accuracies.csv', vt_acc_list, delimiter=",", fmt='%s')
+    np.savetxt('lgbm_model_accuracies.csv', acc_list, delimiter=",", fmt='%s')
     with open('lgbm_model_params.txt', 'w') as outfile:
         json.dump(param_list, outfile)
 
+    vt_acc_list = np.array([0.5*(a[1]+a[2]) for a in acc_list.tolist()])
+    
     best_tree_idx = np.argmax(vt_acc_list)
     print('Best Tree:', best_tree_idx, '(with validation/test accuracy',
           make_printable(vt_acc_list[best_tree_idx]) + '%)')
@@ -104,3 +108,4 @@ if __name__ == "__main__":
     print('Third Best Tree:', best_tree_idx, '(with validation/test accuracy',
           make_printable(vt_acc_list[best_tree_idx]) + '%)')
     print('Third Best Tree Params:', param_list[best_tree_idx])
+
