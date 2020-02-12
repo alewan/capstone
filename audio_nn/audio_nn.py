@@ -16,7 +16,7 @@ from torchvision import transforms
 
 # TODO: Look for better way to deal with hardcoded filepath
 path.insert(1, os.path.join(path[0], '../scripts'))
-from process_naming import get_emotion_num_from_ravdess_name
+import process_naming as pn
 
 from datetime import datetime
 import numpy as np
@@ -56,8 +56,10 @@ class AudioClassifier(nn.Module):
 
 
 def generate_data_label(filename: str) -> torch.tensor:
-    # TODO: will need to generalize once more datasets are in use
-    emotion = get_emotion_num_from_ravdess_name(filename)
+    if pn.is_ravdess_name(filename):
+        emotion = pn.get_emotion_num_from_ravdess_name(filename)
+    elif pn.is_crema_name(filename):
+        emotion = pn.get_emotion_num_from_crema_name(filename)
     return torch.tensor(emotion)
 
 

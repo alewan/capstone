@@ -4,23 +4,33 @@
 
 # Imports
 import os
-import random
 import sys
 from argparse import ArgumentParser
 import shutil
 
-from process_naming import is_ravdess_name, is_crema_name
+from process_naming import get_actor_from_ravdess_name, get_actor_from_crema_name, \
+    is_ravdess_name, is_crema_name, RAVDESS_NUM_ACTORS, CREMA_NUM_ACTORS
 
 if __name__ == "__main__":
     parser = ArgumentParser(description='Split a dataset into train, val, test with 70:20:10 split')
-    parser.add_argument('--input_dir', '-i', type=str, help='Folder containing data', required=True)
+    parser.add_argument('--input_dir', '-i', type=str, help='Folder containing data')
     parser.add_argument('--output_dir', '-o', type=str, default='data_split', help='Folder for output data structure')
+    parser.add_argument('--dataset_name', '-d', type=str, default='ravdess', help='Name of dataset: ravdess, crema')
     args = parser.parse_args()
 
     dir = os.path.abspath(args.input_dir)
     if not os.path.exists(dir):
         print('Provided path', dir, 'is not a valid directory. Please try again')
         sys.exit(-1)
+
+    if args.dataset_name == 'ravdess':
+        actor_func = get_actor_from_ravdess_name
+        name_func = is_ravdess_name
+        actor_num = RAVDESS_NUM_ACTORS
+    elif args.dataset_name == 'crema':
+        actor_func = get_actor_from_crema_name
+        name_func = is_crema_name
+        actor_num = CREMA_NUM_ACTORS
 
     train_path = os.path.join(args.output_dir, 'train')
     val_path = os.path.join(args.output_dir, 'val')
@@ -40,26 +50,19 @@ if __name__ == "__main__":
         if not os.path.exists(test_path):
             os.mkdir(test_path)
 
-    files = os.listdir(dir)
-    num_files = len(files)
-
-    # this is to get a mix of actors and emotions
-    random.shuffle(files)
-
     # set split params
-    train_num = num_files * 0.6
-    val_num = num_files * 0.2 + train_num
+    train_num = actor_num * 0.6
+    val_num = actor_num * 0.2 + train_num
 
-    i = 0
-    for filename in files:  # assuming jpg
+    for filename in os.listdir(dir):  # assuming jpg
         source_path = os.path.join(dir, filename)
-        if is_ravdess_name(filename) or is_crema_name(filename):
-            if i <= train_num:
+        if name_func(filename):
+            actor = actor_func(filename)
+            if actor <= train_num:
                 shutil.move(source_path, train_path)
-            elif i <= val_num:
+            elif actor <= val_num:
                 shutil.move(source_path, val_path)
             else:
                 shutil.move(source_path, test_path)
         else:
             print('Ignoring non-image file ', filename)
-        i += 1

@@ -7,14 +7,18 @@ import re
 RAVDESS_STRING = r'(\d+)-(\d+)-(\d+)-(\d+)-(\d+)-(\d+)-(\d+)'
 RAVDESS_NAME = re.compile(RAVDESS_STRING)
 RAVDESS_FILE = re.compile(RAVDESS_STRING + '.mp4$')
-
 RAVDESS_EMOTION_MAPPING = ['NEUTRAL', 'CALM', 'HAPPY', 'SAD', 'ANGRY', 'FEARFUL', 'DISGUST', 'SURPRISED']
+RAVDESS_NUM_ACTORS = 24
+
 AWS_RAVDESS_LIST = ['NEUTRAL', 'CALM', 'HAPPY', 'SAD', 'ANGRY', 'FEAR', 'DISGUSTED', 'SURPRISED']
 AWS_EMOTION_DICT = {'NEUTRAL': 0, 'CALM': 1, 'HAPPY': 2, 'SAD': 3, 'ANGRY': 4, 'FEAR': 5, 'DISGUSTED': 6,
                     'SURPRISED': 7, 'CONFUSED': 8}
 
-RAVDESS_NUM_ACTORS = 24
-CREMA_NUM_ACTORS = 0
+CREMA_STRING = r'(\d{4})_([A-Z]{3})_([A-Z]{3})_([A-Z]{2})'
+CREMA_NAME = re.compile(CREMA_STRING)
+CREMA_EMOTION_MAPPING = ['NEU', 'HAP', 'SAD', 'ANG', 'FEA', 'DIS']
+CREMA_EMOTION_DICT = {'NEU': 0, 'HAP': 2, 'SAD': 3, 'ANG': 4, 'FEA': 5, 'DIS': 6}
+CREMA_NUM_ACTORS = 91
 
 
 def is_ravdess_file(file_name: str) -> bool:
@@ -26,7 +30,7 @@ def is_ravdess_name(name: str) -> bool:
 
 
 def is_crema_name(name: str) -> bool:
-    pass
+    return re.match(CREMA_NAME, name) is not None
 
 
 def get_emotion_from_ravdess_name(name: str) -> str:
@@ -70,4 +74,16 @@ def get_actor_from_ravdess_name(name: str) -> int:
 
 
 def get_actor_from_crema_name(name: str) -> int:
-    pass
+    a = re.match(CREMA_NAME, name)
+    if a is not None:
+        idx = int(a.group(1)) - 1001
+        return idx if idx < CREMA_NUM_ACTORS else -1
+    return 'ERROR - No match found'
+
+
+def get_emotion_num_from_crema_name(name: str) -> int:
+    a = re.match(CREMA_NAME, name)
+    if a is not None:
+        emotion = a.group(3)
+        return CREMA_EMOTION_DICT[emotion]
+    return -1
