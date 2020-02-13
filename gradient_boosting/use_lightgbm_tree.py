@@ -23,7 +23,6 @@ if __name__ == "__main__":
     # Read in data
     with open(path_to_check, 'r') as file:
         data_list = load_from_json_file(file)
-    # data_list = [e[1] for e in data_list] # this is needed for existing jpg_dump_for_lgbm files (will be removed)
     data_list = array(data_list)
 
     # Instantiate LGBM model from saved file

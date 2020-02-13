@@ -82,7 +82,7 @@ if __name__ == "__main__":
         valid_acc = calculate_acc(bst.predict(valid_data), valid_labels)
         test_acc = calculate_acc(bst.predict(test_data), test_labels)
 
-        acc_list[i][0] = calculate_acc(bst.predict(train_data), train_labels) 
+        acc_list[i][0] = calculate_acc(bst.predict(train_data), train_labels)
         acc_list[i][1] = calculate_acc(bst.predict(valid_data), valid_labels)
         acc_list[i][2] = calculate_acc(bst.predict(test_data), test_labels)
 
@@ -90,8 +90,8 @@ if __name__ == "__main__":
     with open('lgbm_model_params.txt', 'w') as outfile:
         json.dump(param_list, outfile)
 
-    vt_acc_list = np.array([0.5*(a[1]+a[2]) for a in acc_list.tolist()])
-    
+    vt_acc_list = np.array([0.5 * (a[1] + a[2]) for a in acc_list.tolist()])
+
     best_tree_idx = np.argmax(vt_acc_list)
     print('Best Tree:', best_tree_idx, '(with validation/test accuracy',
           make_printable(vt_acc_list[best_tree_idx]) + '%)')
@@ -108,4 +108,3 @@ if __name__ == "__main__":
     print('Third Best Tree:', best_tree_idx, '(with validation/test accuracy',
           make_printable(vt_acc_list[best_tree_idx]) + '%)')
     print('Third Best Tree Params:', param_list[best_tree_idx])
-

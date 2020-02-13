@@ -6,7 +6,7 @@ from os import path
 from sys import exit
 import audio_nn as nn
 from argparse import ArgumentParser
-from numpy import savetxt, array
+from numpy import savetxt
 
 if __name__ == "__main__":
     parser = ArgumentParser(description='Get predictions from audio neural net')
