@@ -62,8 +62,7 @@ ENV-UP
 - PREP - Initial preparation work for the project
 - NN - neural net
 - PROC - processing
-- FE - frontend
-- BE - backend
+- UI - user interface
 - IMG - images/video 
 - AUD - audio
 - MISC - miscellaneous
