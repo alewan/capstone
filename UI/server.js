@@ -70,8 +70,11 @@ app.post('/classify', function(req, res){
         //var UI_results = JSON.stringify(emotions);
         //res.end("results: " + UI_results);
         //res.render({UI_results: UI_results});
-      console.log(results);
-      res.status(204).send();
+      console.log(results[0]);
+      res.status(200).json({
+         "result":results[0]
+       })
+      //res.status(204).send();
    });
 });
 

@@ -1,8 +1,5 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-//import Button from '@material-ui/core/Button';
-
-//import 'semantic-ui/dist/semantic.min.css';
 
 const mimeTypeRegexp = /^(application|audio|example|image|message|model|multipart|text|video)\/[a-z0-9\.\+\*-]+$/;
 const extRegexp = /\.[a-zA-Z0-9]*$/;
@@ -39,13 +36,13 @@ class Files extends React.Component {
     for (let i = 0; i < filesAdded.length; i++) {
       let file = filesAdded[i]
 
-      // Assign file an id
+      // assign file an id
       file.id = 'files-' + this.id++
 
-      // Tell file it's own extension
+      // tell file its own extension
       file.extension = this.fileExtension(file)
 
-      // Tell file it's own readable size
+      // tell file its own readable size
       file.sizeReadable = this.fileSizeReadable(file.size)
 
       // Add preview, either image or file extension
@@ -60,7 +57,7 @@ class Files extends React.Component {
         }
       }
 
-      // Check for file max limit
+      // check for file max limit
       if (this.state.files.length + files.length >= this.props.maxFiles) {
         this.onError({
           code: 4,
@@ -69,11 +66,12 @@ class Files extends React.Component {
         break
       }
 
-      // If file is acceptable, push or replace
+      // if file is acceptable, push or replace
       if (this.fileTypeAcceptable(file) && this.fileSizeAcceptable(file)) {
         files.push(file)
       }
     }
+
     this.setState({
       files: this.props.multiple === false
         ? files

@@ -5,7 +5,7 @@ module.exports = {
    mode: 'production',
    entry: [
       'webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000',
-      './src/demo.js'
+      './src/app.js'
    ],
    output: {
       path: path.resolve(__dirname, 'dist'),

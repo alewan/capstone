@@ -18,6 +18,12 @@ body {
   width: 150px;
   font-family: Arial;
   border: none !important;
+}
+
+.classification-result {
+  text-align: center !important;
+  font-family: Arial;
+  border: none !important;
 
 }
 .main {
@@ -49,17 +55,6 @@ body {
   text-align: center;
   cursor: pointer;
 }
-
-/* .files-button-submit {
-  display: flex;
-  text-align: center;
-  height: 40px;
-  line-height: 40px;
-  width: 50%;
-  box-sizing: border-box;
-  border-right: 1px solid #D3D3D3;
-  font-family: Arial;
-} */
 
 .files-button-submit:before {
   content: "Submit"

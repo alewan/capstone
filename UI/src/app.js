@@ -3,13 +3,15 @@ import Blob from 'blob'
 import FormData from 'form-data'
 import React from 'react'
 import ReactDOM from 'react-dom'
-import Files from './'
+import Files from './file'
+// import Classification from './class'
 
-class FilesDemo1 extends React.Component {
+class Application extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      files: []
+      files: [], 
+      classifiction: ""
     }
   }
 
@@ -41,28 +43,34 @@ class FilesDemo1 extends React.Component {
     .catch(err => window.alert('Error uploading file :('))
   }
 
-  classifyEmotion = () => {
+  classifyEmotion = (classifiction) => {
+    console.log("um hello")
+    console.log(this.state.classifiction)
+
     axios.post('/classify')
+    //.then(response => window.alert(response.data.result))
+    .then(response => this.setState({classifiction: "Emotion Prediction: " + response.data.result}))
+    //.then(this.setState({classifiction: response.data.result}))
+    .then(console.log(this.state.classifiction))
   }
 
   render () {
     return (
-      <div align="center">
+      <div align='center'>
         <h2 className='title'> F.A.C.E. - Facial and Audio-based Classification of Emotion </h2>
         <div className='main'>
         <table className='table' align='center'>
-        <tbody align="center">
-          <tr>
-            <td className='table-cell'> Step 1. Select File: </td>
-            <td className='table-cell'>  Step 2. Upload File: </td>
-            <td className='table-cell'> Step 3. Classify Emotion: </td>
-          </tr>
+        <tbody align='center'>
+        <tr>
+          <td className='table-cell'> Step 1. Select File: </td>
+          <td className='table-cell'>  Step 2. Upload File: </td>
+          <td className='table-cell'> Step 3. Classify Emotion: </td>
+        </tr>
         <tr>
         <td className='table-cell'>
         <Files
           ref='files'
           className='button-ui'
-          // style={{ height: '30px'}}
           onChange={this.onFilesChange}
           onError={this.onFilesError}
           maxFiles={1}
@@ -95,12 +103,17 @@ class FilesDemo1 extends React.Component {
         }
         </td>
         <td className='table-cell'>
-        <button className="button-ui"
+        <button className='button-ui'
           style={{ height: '30px'}}
           onClick={this.classifyEmotion}>
             Classify
           </button>
         </td>
+        </tr>
+         <tr> {/* third row */}
+        <td className='table-cell'> </td>
+        <td className='table-cell' align='center'> {this.state.classifiction} </td>
+        <td className='table-cell'> </td>
         </tr>
         </tbody>
         </table>
@@ -110,4 +123,4 @@ class FilesDemo1 extends React.Component {
   }
 }
 
-ReactDOM.render(<div><FilesDemo1 /></div>, document.getElementById('container'))
+ReactDOM.render(<div><Application /></div>, document.getElementById('container'))

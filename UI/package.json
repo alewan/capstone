@@ -1,8 +1,8 @@
 {
   "name": "react-files",
   "version": "2.4.8",
-  "main": "dist/index.js",
-  "description": "A file input (dropzone) management component for React",
+  "main": "dist/file.js",
+  "description": "capstone",
   "scripts": {
     "build": "rm -rf dist && webpack",
     "dev": "node server.js",
@@ -12,7 +12,7 @@
     "webpack-analyze": "mkdir -p .tmp; NODE_ENV=production webpack --config webpack.config.js --profile --json > .tmp/stats.json; webpack-bundle-analyzer .tmp/stats.json"
   },
   "files": [
-    "dist/index.js"
+    "dist/file.js"
   ],
   "repository": {
     "type": "git",
