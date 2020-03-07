@@ -1,0 +1,123 @@
+body {
+  font-family: 'Roboto', sans-serif;
+  background-color: #bcf7f4 !important;
+}
+.table {
+  width: 70%;
+  border: none !important;
+}
+.title {
+  padding: 15px;
+  font-family: Arial;
+  color: white !important;
+  background-color: #72b3af;
+}
+.table-cell {
+  height: 70px;
+  width: 150px;
+  font-family: Arial;
+  border: none !important;
+}
+.classification-result {
+  text-align: center !important;
+  font-family: Arial;
+  border: none !important;
+}
+.main {
+  padding: 70px;
+  display:flex; 
+  flex-direction:row;
+}
+/* choose file button */
+.button-ui {
+  background-color: white; 
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
+  padding: 10px;
+  height: 56px !important;
+  width: 112px !important;
+  border: solid;
+  cursor: pointer;
+}
+/* other buttons */
+.upload-file-button {
+  border: solid;
+  font-family: Arial;
+  height: 56px !important;
+  width: 112px !important;
+  font-size: 16px;
+  text-align: center;
+  cursor: pointer;
+}
+.files-button-submit:before {
+  content: "Submit"
+}
+.files-button-clear {
+  display: inline-block;
+  text-align: center;
+  height: 40px;
+  line-height: 40px;
+  width: 50%;
+  box-sizing: border-box;
+}
+.files-button-clear:before {
+  content: "Clear"
+}
+.files-list-item {
+  max-width: 150px;
+  padding: 0px;
+}
+.files-list-item-content {
+  max-width: 100px;
+  vertical-align: middle !important;
+  display: inline-block;
+  position: left;
+  overflow: hidden;
+  font-size: 12px;
+}
+.files-list-item-remove {
+  vertical-align: middle !important;
+  display: inline-block;
+  position: right;
+  height: 20px;
+  width: 20px;
+  padding: 10px 5px 5px 5px;
+  cursor: pointer;
+  background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDQ4IDQ4IiB3aWR0aD0iNDgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTTM4IDEyLjgzbC0yLjgzLTIuODMtMTEuMTcgMTEuMTctMTEuMTctMTEuMTctMi44MyAyLjgzIDExLjE3IDExLjE3LTExLjE3IDExLjE3IDIuODMgMi44MyAxMS4xNy0xMS4xNyAxMS4xNyAxMS4xNyAyLjgzLTIuODMtMTEuMTctMTEuMTd6Ii8+PHBhdGggZD0iTTAgMGg0OHY0OGgtNDh6IiBmaWxsPSJub25lIi8+PC9zdmc+) no-repeat center center;
+  background-size: 20px 20px;
+}
+.files-list-item-preview-extension {
+  text-align: center;
+  line-height: 60px;
+  color: #FFF;
+  background-color: #D3D3D3;
+  font-size: 16px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  padding-left: 5px;
+  padding-right: 5px;
+  box-sizing: border-box;
+}
+.files-list-item-remove-image {
+  height: 30px;
+  width: 30px;
+  margin-top: 15px;
+  margin-right: 10px;
+  float: right;
+}
+.files-dropzone-gallery {
+  padding: 10px;
+  border: 1px dashed #D3D3D3;
+  min-height: 300px;
+  width: 500px;
+}
+.files-gallery-item {
+  height: 80px;
+  margin: 5px;
+}
+.files-dropzone-active {
+  border: 1px solid lightgreen;
+  color: lightgreen;
+}
