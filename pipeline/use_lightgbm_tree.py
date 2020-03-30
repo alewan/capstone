@@ -3,6 +3,7 @@
 # Created by Aleksei Wan on 27.01.2020
 
 # Imports (only necessary functions)
+import json
 from os import path
 from sys import exit
 from json import load as load_from_json_file
@@ -27,6 +28,12 @@ def lightgbm_tree(input_file, model):
     # Make predictions
     raw_preds = bst.predict(data_list)
     final_preds = argmax(raw_preds, 1)
+
+    # Prepare raw predictions to be saved in a JSON to be displayed in the UI
+    raw_preds = (raw_preds * 100).tolist()
+
+    with open('../pipeline/pipeline_helper/final_tree_predictions.json', 'w+') as f:
+        json.dump(raw_preds, f)
 
     # Output predictions
     return (final_preds)

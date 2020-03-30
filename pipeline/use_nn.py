@@ -6,7 +6,11 @@ from os import path
 from sys import exit
 import audio_nn as nn
 from argparse import ArgumentParser
+import numpy as np
+
 from numpy import savetxt
+import json
+
 
 def audio_neural_network(checkpoint, audio_dir, batch_size):
     # Check that paths are valid
@@ -30,7 +34,26 @@ def audio_neural_network(checkpoint, audio_dir, batch_size):
     savetxt('../pipeline/pipeline_helper/audio_nn_predictions.csv', pred[0].numpy(), delimiter=",", fmt='%s')
     savetxt('../pipeline/pipeline_helper/audio_nn_prediction_names.csv', pred[1], delimiter=",", fmt='%s')
 
+    # softmax nn predictions in order to display on front end 
+    nn_prd = pred[0].numpy() 
 
+    # new array for softmaxed prediction values
+    sm_pred = np.zeros((4, 8))
+    
+    i = 0
+    for row in nn_prd:
+        sm_pred[i] = np.exp(row - np.max(row))
+        sm_pred[i] = sm_pred[i] / sm_pred[i].sum()
+        i += 1
+
+    # find mean of predictions accross all audio predictions
+    sm_pred_mean = np.zeros(8)
+    sm_pred_mean = np.mean(sm_pred, axis=0) * 100
+
+    # put the audio nn predictions into a json for pipeline display on front end
+    pred_list = sm_pred_mean.tolist()    
+    with open('../pipeline/pipeline_helper/audio_nn_predictions.json', 'w+') as f:
+        json.dump(pred_list, f)
 
 if __name__ == "__main__":
     parser = ArgumentParser(description='Get predictions from audio neural net')

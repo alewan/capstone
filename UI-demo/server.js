@@ -58,7 +58,7 @@ app.post('/files', upload.any(), function (req, res, next) {
 // classify emotion:
 app.post('/classify', function(req, res){
 
-   console.log("UI running pipeline to classify .mp4...")
+   console.log("UI DEMO running pipeline to classify .mp4...")
   
    var classification = PythonShell.run(pipelineScript, null, function (err, results) {
       if (err) throw err;
@@ -69,6 +69,6 @@ app.post('/classify', function(req, res){
    });
 });
 
-app.listen(8080, function () {
-   console.log(`Starting capstone emo app. on port 8080`)
+app.listen(3000, function () {
+   console.log(`Starting capstone emo demo on port 3000`)
 })

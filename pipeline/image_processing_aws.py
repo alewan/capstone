@@ -67,8 +67,8 @@ def detect_photos_in_dir(directory: str, full_responses: bool) -> list:
         if img_file:
             photo = os.path.join(directory, photo_name)
             labels.append((img_file[1], detect_labels_local_file(photo, full_responses)))
-        # else:
-            # print('Ignoring non-image file', photo_name)
+        else:
+            print('Ignoring non-image file', photo_name)
 
     return labels
 

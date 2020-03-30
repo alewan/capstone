@@ -20,8 +20,8 @@ from use_lightgbm_tree import lightgbm_tree
 
 def run_pipeline():
 
-    FINAL_EMPTION_MAPPING = ['NEUTRAL', 'CALM', 'HAPPY', 'SAD', 'ANGRY', 'FEARFUL', 'DISGUST', 'SURPRISED']
-    
+    AWS_RAVDESS_LIST = ['NEUTRAL', 'CALM', 'HAPPY', 'SAD', 'ANGRY', 'FEAR', 'DISGUSTED', 'SURPRISED']
+
     # 1: .mp4 pre-processing
     
     input_file_path = "../pipeline/pipeline_helper/user_upload/input_file.mp4" 
@@ -60,32 +60,11 @@ def run_pipeline():
     classification = lightgbm_tree(input_file, model)
 
     # get emotion from prediction
-    emotion = FINAL_EMPTION_MAPPING[classification[0]]
-
-    # delete everything at the end!
-    
-    trash_path = "../pipeline/pipeline_helper/audio_preprocessed"
-    files = os.listdir(trash_path)
-    for filename in files:
-    	file_path = os.path.join(trash_path, filename)
-    	os.remove(file_path)
-
-    trash_path = "../pipeline/pipeline_helper/images_preprocessed"
-    files = os.listdir(trash_path)
-    for filename in files:
-    	file_path = os.path.join(trash_path, filename)
-    	os.remove(file_path)
-   
-    os.remove("../pipeline/pipeline_helper/results_for_lgbm.json")
-    os.remove("../pipeline/pipeline_helper/aws_results.json")
-    os.remove("../pipeline/pipeline_helper/audio_nn_prediction_names.csv")
-    os.remove("../pipeline/pipeline_helper/audio_nn_predictions.csv")
+    emotion = AWS_RAVDESS_LIST[classification[0]]
 
     # return emotion prediction
     print(emotion)
     return emotion
-    
 
 if __name__ == "__main__":
     run_pipeline()
-
