@@ -46,12 +46,13 @@ def generate_bdst_param_pack() -> dict:
     lr = pull_random_float_with_floor(0.0001, 0.015, 0.015)
     l1 = pull_random_float_with_floor(0.00001, 0.005, 0.001)
     leaves = pull_random_int(32, 8.0)
-    rounds = pull_random_int(3250, 750.0)
+    rounds = pull_random_int(4050, 550.0)
     es_rounds = round(rounds / 20)
-    #feature_frac = pull_random_float_with_ceiling(0.8, 0.2, 1)
+    # feature_frac = pull_random_float_with_ceiling(0.8, 0.2, 1)
     min_data_leaf = pull_random_int(20, 5)
 
-    return {'objective': 'multiclass',
+    return {'verbose': -1,  # suppress output
+            'objective': 'multiclass',
             'num_class': 8,
             'metric': 'multi_logloss',
             'early_stopping_rounds': es_rounds,

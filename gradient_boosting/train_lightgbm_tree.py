@@ -62,12 +62,8 @@ if __name__ == "__main__":
     valid_labels = np.array(labels[idx1:idx2])
     test_data = np.array(data_list[idx2:])
     test_labels = np.array(labels[idx2:])
-    training_data = lgbm.Dataset(train_data, label=train_labels)
-    validation_data = lgbm.Dataset(valid_data, label=valid_labels)
-
-    print('Training Samples:', len(train_labels))
-    print('Validation Samples:', len(train_labels))
-    print('Testing Samples:', len(train_labels))
+    training_data = lgbm.Dataset(train_data, label=train_labels, params={'verbose': -1})
+    validation_data = lgbm.Dataset(valid_data, label=valid_labels, params={'verbose': -1})
 
     # Run training
     acc_list = np.zeros((args.epochs, 3))
@@ -93,7 +89,7 @@ if __name__ == "__main__":
     vt_acc_list = np.array([0.5 * (a[1] + a[2]) for a in acc_list.tolist()])
 
     best_tree_idx = np.argmax(vt_acc_list)
-    print('Best Tree:', best_tree_idx, '(with validation/test accuracy',
+    print('\nBest Tree:', best_tree_idx, '(with validation/test accuracy',
           make_printable(vt_acc_list[best_tree_idx]) + '%)')
     print('Best Tree Params:', param_list[best_tree_idx], '\n')
 
@@ -108,3 +104,7 @@ if __name__ == "__main__":
     print('Third Best Tree:', best_tree_idx, '(with validation/test accuracy',
           make_printable(vt_acc_list[best_tree_idx]) + '%)')
     print('Third Best Tree Params:', param_list[best_tree_idx])
+
+    print('Training Samples:', len(train_labels))
+    print('Validation Samples:', len(valid_labels))
+    print('Testing Samples:', len(test_labels))
