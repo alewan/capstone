@@ -47,7 +47,7 @@ if __name__ == "__main__":
         print('Actual:', actual_emotion, '\nAWS:', aws_emotions)
         if actual_emotion == aws_emotions[0]:
             direct_match_counter += 1
-        elif actual_emotion == aws_emotions[1] or actual_emotion == aws_emotions[2]:
+        elif actual_emotion == aws_emotions[1]:
             second_match_counter += 1
         else:
             if actual_emotion not in aws_emotions:
@@ -55,6 +55,7 @@ if __name__ == "__main__":
         total += 1
 
     total_for_comp = float(total - emotion_not_covered)
+    print('Number of samples:', total_for_comp)
     def make_printable(x): return round(100 * float(x), 3)
     print('Number without direct match:', emotion_not_covered)
     print('Total Accuracy', make_printable(direct_match_counter / total_for_comp), '%')

@@ -8,8 +8,8 @@ from sys import exit, path as sys_path
 import json
 from argparse import ArgumentParser
 from numpy import loadtxt
-from bisect import bisect_left
 from csv import reader
+from scipy.special import softmax
 
 sys_path.append(path.join(path.dirname(__file__), "../scripts"))
 from process_naming import get_emotion_num_from_ravdess_name, aws_number_from_emotion
@@ -58,12 +58,13 @@ def merge_lists(audio_dict: dict, img_list: list, training_mode: bool = False) -
     if training_mode:
         for i in img_list:
             if i[0] in audio_dict:
-                ret_list.append((i[2], i[1], audio_dict[i[0]]))
-
+                l = softmax(audio_dict[i[0]]) * 100
+                ret_list.append((i[2], i[1] + l.tolist()))
     else:
         for i in img_list:
             if i[0] in audio_dict:
-                ret_list.append((i[1], audio_dict[i[0]]))
+                l = softmax(audio_dict[i[0]]) * 100
+                ret_list.append((i[1] + l.tolist()))
     return ret_list
 
 
