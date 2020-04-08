@@ -1,50 +1,62 @@
 body {
-  font-family: 'Roboto', sans-serif;
-  background-color: #C0C0C0 !important;
+  background-color: rgb(241, 241, 241) !important;
   padding: 0px;
 }
-.table {
-  width: 70%;
+.upload-table {
   border: none !important;
+  width: 40%;
+  align: left !important;
 }
 .title {
   padding: 15px;
-  font-family: Arial;
   color: white !important;
   background-color: black;
 }
 .section-title {
   font-size: 20px;
   text-align: left !important;
-  padding: 30px !important; 
-  font-family: Arial;
-  color: black !important;
+  padding-top: 30px !important;
+  padding-right: 30px !important;
+  padding-bottom: 30px !important;
+  padding-left: 150px !important;  color: black !important;
 }
 .table-cell {
   height: 70px !important;
   width: 70px !important;
-  font-family: Arial;
   border: none !important;
+  vertical-align: middle !important;
 }
 .final-classification {
-  font-family: Arial;
   font-size: 20px;
   border: none !important;
   font-weight: bold !important;
-  /* align-content: center !important; */
   text-align: center !important;
   display: block !important;
-  /* align-items: center !important;
-  justify-content: center !important; */
-  /* display: flex !important; */
+}
+.pipeline-table {
+  border: 5px black;
+  width: 80%;
 }
 .pipeline-table-cell {
   height: 70px !important;
   width: 70px !important;
-  font-family: Arial;
-  border: none !important;
+  border: 4px !important;
+  vertical-align: middle !important;
+}
+.pipeline-table-cell-top-diagonal-arrow {
+  height: 70px !important;
+  width: 70px !important;
+  border: 4px !important;
+  vertical-align: bottom !important;
+}
+.pipeline-table-cell-bottom-diagonal-arrow {
+  height: 70px !important;
+  width: 70px !important;
+  border: 4px !important;
+  vertical-align: middle !important;
 }
 img {
+  border: none !important;
   display: block;
 }
 .pipeline-image {
@@ -52,18 +64,61 @@ img {
   width: 150px !important;
   font-family: Arial;
   border: none !important;
+  vertical-align: middle !important;
+}
+.arrow-image {
+  height: 17px !important;
+  width: 50px !important;
+  vertical-align: middle !important;
+  padding: none !important;
+}
+.diagonal-arrow-image {
+  height: 50px !important;
+  width: 50px !important;
+  vertical-align: middle !important;
+  padding: none !important;
+}
+.pipeline-predictions-title {
+  border: none !important;
+  text-align: center !important;
+  height: 10px !important;
+  font-weight: bold !important;
+  padding-top: 0px !important;
+  padding-right: 0px !important;
+  padding-bottom: 0px !important;
+  padding-left: 0px !important;
 }
 .aws-pred-row {
-  border: none !important;
+  /* border: none !important; */
 }
-.aws-pred-cell {
+.prediction-table {
+  border: black !important;
+}
+.prediction-table-cell {
   border: none !important;
-  padding: 0px !important;
+  padding-top: 0px !important;
+  padding-right: 10px !important;
+  padding-bottom: 0px !important;
+  padding-left: 0px !important;
+}
+.prediction-table-title {
+  border: none !important;
+  text-align: center;
+  padding-top: 15px !important;
+  padding-right: 0px !important;
+  padding-bottom: 8px !important;
+  padding-left: 0px !important;
 }
 .main {
-  padding: s0px;
+  padding: 0px;
   display:flex; 
   flex-direction:row;
+}
+.main-upload {
+  padding: 20px;
+  display:flex; 
+  flex-direction:row;
+  align: left !important;
 }
 /* choose file button */
 .button-ui {
@@ -80,7 +135,6 @@ img {
 /* other buttons */
 .upload-file-button {
   border: solid;
-  font-family: Arial;
   height: 56px !important;
   width: 112px !important;
   font-size: 16px;

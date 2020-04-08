@@ -7,6 +7,7 @@ from sys import exit
 import audio_nn as nn
 from argparse import ArgumentParser
 import numpy as np
+from scipy.special import softmax
 
 from numpy import savetxt
 import json
@@ -37,9 +38,11 @@ def audio_neural_network(checkpoint, audio_dir, batch_size):
     # softmax nn predictions in order to display on front end 
     nn_prd = pred[0].numpy() 
 
-    # new array for softmaxed prediction values
+    # # new array for softmaxed prediction values
     sm_pred = np.zeros((4, 8))
     
+    # sm = softmax(nn_prd)
+
     i = 0
     for row in nn_prd:
         sm_pred[i] = np.exp(row - np.max(row))

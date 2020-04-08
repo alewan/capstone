@@ -20,7 +20,7 @@ def lightgbm_tree(input_file, model):
     # Read in data
     with open(path_to_check, 'r') as file:
         data_list = load_from_json_file(file)
-    data_list = array(data_list).reshape((1,-1))
+    data_list = array(data_list)
 
     # Instantiate LGBM model from saved file
     bst = lgbm.Booster(model_file=model)

@@ -1,10 +1,11 @@
 body {
   font-family: 'Roboto', sans-serif;
-  background-color: rgb(158, 219, 238) !important;
+  background-color: rgb(199, 234, 245) !important;
 }
 .table {
-  width: 70%;
+  width: 100% !important;
   border: none !important;
+  table-layout: fixed !important;
 }
 .title {
   padding: 15px;
@@ -13,8 +14,8 @@ body {
   background-color: #6cbdd6;
 }
 .table-cell {
-  height: 70px;
-  width: 150px;
+  height: 70px !important;
+  width: 100px !important;
   font-family: Arial;
   border: none !important;
 }
@@ -25,7 +26,7 @@ body {
 }
 .main {
   padding: 70px;
-  display:flex; 
+  /* display: flex;  */
   flex-direction:row;
 }
 /* choose file button */
