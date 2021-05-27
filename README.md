@@ -1,89 +1,16 @@
-# capstone
-2019-2020 Capstone Project
+# Capstone
 
-## Directory Structure
+The ![Final Report](https://www.github.com/alewan/capstone/blob/develop/FinalReport.pdf) contains a detailed description of this project.
 
-### envs
-Contains the conda environment for the project
+The executive summary is available below for convenience:
 
-### scripts
-Contains useful scripts
-
-### aliases.sh
-Contains useful aliases for common commands
-
-### cached_results
-Contains results from external services that should be saved/made available to the team.
-
-## Issue Practices
-### Creating Issues
-1. Decide what type of issue it is and tag it: story, task, etc.
-    1. Stories typically follow the INVEST pattern (Independent, Verifiable, Estimable, Small, and Testable) and describe a new feature being added for a particular purpose
-        1. All stories need an objective and acceptance critera (AC). Objective is the goal of the story. Acceptance criteria is what is required before a task can be considered completed.
-    1. Tasks are the smallest units of work
-        1. Tasks should explain the desired outcome and (briefly) the reason for the task
-    1. Bugs are issues with the existing codebase that require fixing
-        1. Bugs need a 'Current Behaviour' and 'Expected Behaviour' so that it is clear what is being fixed.
-1. Add it to the appropriate Sprint/Milestone
-1. Assign it to the appropriate person
-1. Add it to the project so that it is visible on the board and can be tracked.
-
-## Commit Practices
-
-### Merge Process
-1. ALWAYS REBASE - if unsure how, ask (Note: This is also the only option enabled in GitHub for PRs right now)
-
-### Good Commit Messages
-1. 3-4 character tag before commit title (either from existing list of tags, or be created)
-    1. Can have multiple tags with space between (PREP NN)
-1. Descriptive title of what commit does
-1. Commit message with major updates & why they were made
-1. Tag the related issue in the commit message</br>
-`Issue-Id: #xxx`
-1. Update the environment.yaml if you add new dependencies</br>
-    1. Can be done with `export_env` if the aliases script is sourced.
-    1. If the environent is updated, add ENV-UP tag to end of commit
-1. Limit characters per line to 70 for readability
+Autism Spectrum Disorder (ASD) is a severe developmental disability, which involves “impairments in social interaction… and verbal and nonverbal communication” [1]. Our team has seen first hand the challenges that these children experience in communicating. With this understanding, the team decided on the goal of building an application that will act as a learning tool for children with autism who have difficulty interpreting verbal and nonverbal social cues. This application is a web application designed to analyze video and audio data and produce results in an easy-to-understand interface, allowing children to practice and better comprehend the world around them.
 
 
-#### Example Commit
-```
-PREP Environment Preparation
+After outlining the project goal, key functional requirements, objectives, and constraints (FOCs), we established an appropriate scope for the project and refined what would be expected from the final solution. This includes expectations on what will be classified and requirements for compliance with applicable laws and regulations. These FOCs also include validation/acceptance tests which define precisely how they would be verified.
 
-- Add a conda environment config in an environments directory
-for consistency amongst the team
-- Create a directory for scripts
 
-Issue-Id: #69
-ENV-UP
-```
+Over the course of several months, the team designed and executed the components of the system, and created an application that is able to execute its intended function. The final design consists of five primary components, which were built modularly and integrated into a single pipeline. The components consist of a user interface, data pre-processing,  audio neural network, image-based classification, and a gradient boosting decision tree. The technical challenges of this project led to important design decisions, including type of data input and machine learning methods used. The final product is a functional application that is targeted towards children with autism as a learning tool. The application is able to accept video files as input and provide an emotion prediction with an accuracy of approximately 71%.  
 
-### List of current tags
-- PREP - Initial preparation work for the project
-- NN - neural net
-- PROC - processing
-- FE - frontend
-- BE - backend
-- IMG - images/video 
-- AUD - audio
-- MISC - miscellaneous
 
-## Git Commands
-Tip: create backup branches to avoid messing up a working branch.
-
-### SQUASH
-$ git rebase -i <br>
-In the terminal window, pick, squash, etc. the commit messages that you want. Always squash down (squash towards the first commit you made chornologically).
-
-### REBASE 
-Rebase is what you do when you want to push your code (you want to put your code into the github repository). <br>
-$ git rebase -i origin/develop <br>
-If merge conflicts, the rebase will pause on that commit. You fix all the conflicts. <br>
-$ git add <br>
-$ git rebase --continue <br>
-Now, to push into the github repo: <br>
-$ git push <br>
-
-Tagging Reviewers: <br>
-- Tag the people who your PR is relevant to. <br>
-- Tag people only once you're ready to have your code reviewed. <br>
+The validation tests that the team set out to achieve show the success of the final application. These tests range from quantitative numerical results to interactive, useability features, and test all components of our system. Overall, the team has observed that the functionality and purpose of the project was achieved. We recognize that some of the technical challenges in the nature of this project and specifically with audio data analysis and classification led to final accuracies slightly below our intended numbers. However, we see this as a learning process, and opportunity for future steps to be taken. The team sees an exciting potential future for this application, with essential next steps to improve technical and useability components of the application. We believe that there is a need for these kinds of educational tools in society, and that our application could fill this gap.
