@@ -1,6 +1,6 @@
 # Capstone
 
-The ![Final Report](https://www.github.com/alewan/capstone/blob/develop/FinalReport.pdf) contains a detailed description of this project.
+The [Final Report](https://www.github.com/alewan/capstone/blob/develop/FinalReport.pdf) contains a detailed description of this project.
 
 The executive summary is available below for convenience:
 
